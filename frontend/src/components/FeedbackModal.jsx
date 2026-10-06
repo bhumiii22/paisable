@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Star, X, MessageSquare, CheckCircle, Send } from 'lucide-react';
 import useAuth from '../hooks/useAuth';
-import { feedbackService } from '../services';
+import api from '../api/axios';
 import { toast } from 'react-toastify';
 
 const FeedbackModal = ({ isOpen, onClose }) => {
@@ -33,7 +33,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
 
     try {
       setSubmitting(true);
-      await feedbackService.submitFeedback({
+      await api.post('/feedback', {
         rating,
         category,
         name,
