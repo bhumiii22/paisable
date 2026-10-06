@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import useCurrency from '../hooks/useCurrency';
 import useTheme from '../hooks/useTheme';
-import { userService } from '../services';
+import api from '../api/axios';
 import { toast } from 'react-toastify';
 import { 
   User, 
@@ -97,9 +97,9 @@ const SettingsPage = () => {
     e.preventDefault();
     try {
       setIsSavingProfile(true);
-      const updatedUser = await userService.updateProfile(profileForm);
+      const res = await api.put('/users/profile', profileForm);
       if (updateUser) {
-        updateUser(updatedUser);
+        updateUser(res.data);
       }
       toast.success('Profile updated successfully!');
     } catch (err) {
@@ -125,9 +125,9 @@ const SettingsPage = () => {
         },
       };
 
-      const updatedUser = await userService.updateProfile(payload);
+      const res = await api.put('/users/profile', payload);
       if (updateUser) {
-        updateUser(updatedUser);
+        updateUser(res.data);
       }
 
       // Update global currency context if changed
@@ -167,10 +167,10 @@ const SettingsPage = () => {
 
     try {
       setIsChangingPassword(true);
-      await userService.changePassword(
-        passwordForm.currentPassword,
-        passwordForm.newPassword
-      );
+      await api.put('/users/change-password', {
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
+      });
       toast.success('Password changed successfully!');
       setPasswordForm({
         currentPassword: '',
@@ -195,7 +195,7 @@ const SettingsPage = () => {
 
     try {
       setIsDeletingAccount(true);
-      await userService.deleteAccount();
+      await api.delete('/users/account');
       toast.info('Account deleted successfully.');
       logout();
     } catch (err) {
